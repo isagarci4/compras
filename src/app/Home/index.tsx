@@ -9,28 +9,26 @@ import { useEffect, useState } from "react";
 import { itemsStorage, ItemStorage } from "@/storage/itemsStorage";
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE]
-const ITEMS = [
-  { 
-    id: "1", 
-    status: FilterStatus.DONE, 
-    description: "1 pacote de café" 
-  },
-  { 
-    id: "2", 
-    status: FilterStatus.PENDING, 
-    description: "3 pacotes de macarrão" 
-  },
-  { 
-    id: "3", 
-    status: FilterStatus.PENDING, 
-    description: "3 cebolas" 
-  },
-]
 
 export function Home() {
   const [filter, setFilter] = useState(FilterStatus.PENDING);
   const [description, setDescription] = useState("");
   const [items, setItems] = useState<ItemStorage[]>([]);
+
+  async function handleAdd() {
+    if (!description.trim()) {
+      return Alert.alert("Adicionar", "Informe a descrição para adicionar");
+    }
+
+    const newItem = {
+      id: Math.random().toString(36).substring(2),
+      description,
+      status: FilterStatus.PENDING
+    } 
+
+    await itemsStorage.add(newItem);
+    await getItems();
+  }
 
   async function getItems() {
     try {
@@ -55,10 +53,7 @@ export function Home() {
           placeholder="O que você precisa comprar?"
           onChangeText={setDescription}
         />
-        <Button 
-          title="Adicionar" 
-          onPress={() => console.log("Adicionado")} 
-        />
+        <Button title="Adicionar" onPress={handleAdd} />
       </View>
 
       <View style={styles.content}>
