@@ -24,7 +24,7 @@ async function getByStatus(status: FilterStatus): Promise<ItemStorage[]> {
     return items.filter((item) => item.status === status);
 }
 
-export const ItemStorage = {
+export const itemsStorage = {
     get,
     getByStatus,
 }

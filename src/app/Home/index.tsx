@@ -1,11 +1,12 @@
-import { FlatList, Image, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, FlatList, Image, Text, TouchableOpacity, View } from "react-native";
 import { styles } from "./styles";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/Input";
 import { Filter } from "@/components/Filter";
 import { FilterStatus } from "@/types/FilterStatus";
 import { Item } from "@/components/Item";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { itemsStorage, ItemStorage } from "@/storage/itemsStorage";
 
 const FILTER_STATUS: FilterStatus[] = [FilterStatus.PENDING, FilterStatus.DONE]
 const ITEMS = [
@@ -29,6 +30,21 @@ const ITEMS = [
 export function Home() {
   const [filter, setFilter] = useState(FilterStatus.PENDING);
   const [description, setDescription] = useState("");
+  const [items, setItems] = useState<ItemStorage[]>([]);
+
+  async function getItems() {
+    try {
+      const response = await itemsStorage.get();
+      setItems(response)
+    } catch (error) {
+      console.log(error);
+      Alert.alert("Erro", "Não foi possível filtrar os itens ");
+    }
+  }
+
+  useEffect(() => {
+    getItems();
+  }, [])
 
   return(
     <View style={styles.container}>
@@ -62,7 +78,7 @@ export function Home() {
         </View>
 
         <FlatList 
-          data={ITEMS}
+          data={items}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <Item 
