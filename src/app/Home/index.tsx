@@ -28,6 +28,10 @@ export function Home() {
 
     await itemsStorage.add(newItem);
     await itemsByStatus();
+
+    setFilter(FilterStatus.PENDING)
+    Alert.alert("Adicionado", `Adicionado ${description}`);
+    setDescription("");
   }
 
   async function itemsByStatus() {
@@ -37,6 +41,15 @@ export function Home() {
     } catch (error) {
       console.log(error);
       Alert.alert("Erro", "Não foi possível filtrar os itens ");
+    }
+  }
+
+  async function handleRemove(id: string) {
+    try {
+      await itemsStorage.remove(id);
+      await itemsByStatus();
+    } catch (error) {
+      Alert.alert("Remover", "Não foi possível remover.");
     }
   }
 
@@ -52,6 +65,7 @@ export function Home() {
         <Input 
           placeholder="O que você precisa comprar?"
           onChangeText={setDescription}
+          value={description}
         />
         <Button title="Adicionar" onPress={handleAdd} />
       </View>
@@ -79,7 +93,7 @@ export function Home() {
             <Item 
               data={item}
               onStatus={() => console.log("Troca status")}
-              onRemove={() => console.log("Remover")}
+              onRemove={() => handleRemove(item.id)}
             />
           )}
           showsVerticalScrollIndicator={false}
