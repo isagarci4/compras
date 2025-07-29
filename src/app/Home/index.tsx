@@ -28,6 +28,7 @@ const ITEMS = [
 
 export function Home() {
   const [filter, setFilter] = useState(FilterStatus.PENDING);
+  const [description, setDescription] = useState("");
 
   return(
     <View style={styles.container}>
@@ -36,6 +37,7 @@ export function Home() {
       <View style={styles.form}>
         <Input 
           placeholder="O que você precisa comprar?"
+          onChangeText={setDescription}
         />
         <Button 
           title="Adicionar" 
